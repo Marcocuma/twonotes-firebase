@@ -39,8 +39,9 @@
           </ul>
       </div>
       <div id="botones" class="nav-item">
-          <button class="btn btn-outline-primary my-2 my-sm-0" @click="abrirModalLogin" :class="[ pagina != 0 ? 'ocultar' : '' ]" type="submit">Login</button>
-          <button class="btn btn-outline-primary my-2 my-sm-0" @click="abrirModalRegis" :class="[ pagina != 0 ? 'ocultar' : '' ]" type="submit">Register</button>
+          <button class="btn btn-outline-primary my-2 my-sm-0 sinLogear" @click="abrirModalLogin"  type="submit">Login</button>
+          <button class="btn btn-outline-primary my-2 my-sm-0 sinLogear" @click="abrirModalRegis"  type="submit">Register</button>
+          <button class="btn btn-outline-danger my-2 my-sm-0 logeado" @click="loggout" type="submit">Logout</button>
       </div>
   </nav>
   <!--Modal Registro-->
@@ -136,6 +137,7 @@
 
 <script lang="js">
 const $ = require('jquery')
+import firebase from 'firebase'
 // Lo declaramos globalmente
 window.$ = $
   export default  {
@@ -143,6 +145,14 @@ window.$ = $
     props: [],
     updated() {
       localStorage.pagina=JSON.stringify(this.pagina);
+      if(firebase.auth().currentUser){
+            $('.sinLogear').css('Display','none')
+            $('.logeado').css('Display','')
+      } else {
+            $('.sinLogear').css('Display','')
+            $('.logeado').css('Display','none')
+      }
+        this.logged=false;
     },
     mounted () {
         if (localStorage.pagina) {
@@ -153,10 +163,11 @@ window.$ = $
         });
         $('#cerrarLogin').on('click',function(){
             $('#modalLogin').fadeOut();
-        })
+        });
     },
     data () {
       return {
+          logged: false,
           pagina:0
       }
     },
@@ -169,6 +180,9 @@ window.$ = $
         },
         cambiarPagina: function(num){
             this.pagina=num;
+        },
+        loggout : function(){
+            firebase.auth().signOut()
         }
     },
     computed: {
