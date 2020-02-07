@@ -39,9 +39,9 @@
           </ul>
       </div>
       <div id="botones" class="nav-item">
-          <button class="btn btn-outline-primary my-2 my-sm-0 sinLogear" @click="abrirModalLogin"  type="submit">Login</button>
-          <button class="btn btn-outline-primary my-2 my-sm-0 sinLogear" @click="abrirModalRegis"  type="submit">Register</button>
-          <button class="btn btn-outline-danger my-2 my-sm-0 logeado" @click="loggout" type="submit">Logout</button>
+          <button class="btn btn-outline-primary my-2 my-sm-0" @click="abrirModalLogin" id='login' type="submit">Login</button>
+          <button class="btn btn-outline-primary my-2 my-sm-0" @click="abrirModalRegis" id='register' type="submit">Register</button>
+          <button class="btn btn-outline-danger my-2 my-sm-0 " @click="loggout" id='logout' type="submit">Logout</button>
       </div>
   </nav>
   <!--Modal Registro-->
@@ -146,11 +146,13 @@ window.$ = $
     updated() {
       localStorage.pagina=JSON.stringify(this.pagina);
       if(firebase.auth().currentUser){
-            $('.sinLogear').css('Display','none')
-            $('.logeado').css('Display','')
+            $('#login').css('display','none')
+            $('#register').css('display','none')
+            $('#logout').css('display','')
       } else {
-            $('.sinLogear').css('Display','')
-            $('.logeado').css('Display','none')
+            $('#login').css('display','')
+            $('#register').css('display','')
+            $('#logout').css('display','none')
       }
         this.logged=false;
     },
@@ -158,12 +160,6 @@ window.$ = $
         if (localStorage.pagina) {
           this.pagina = JSON.parse(localStorage.pagina);
         }
-        $('#cerrarRegistro').on('click',function(){
-            $('#modalRegistro').fadeOut();
-        });
-        $('#cerrarLogin').on('click',function(){
-            $('#modalLogin').fadeOut();
-        });
     },
     data () {
       return {
@@ -182,7 +178,8 @@ window.$ = $
             this.pagina=num;
         },
         loggout : function(){
-            firebase.auth().signOut()
+            firebase.auth().signOut();
+            this.logged=false
         }
     },
     computed: {

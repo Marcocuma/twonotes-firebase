@@ -2,7 +2,8 @@
 
   <section class="main-nota row col-12">
         <div id="barraBusqueda" class="col-12 d-flex">
-            <input type="text" class="w-100 m-4" required v-on:keypress="add" v-model="textoNota" placeholder="Texto Nota">
+            <input type="text" class="w-75 m-4" required v-on:keypress="add" v-model="textoNota" placeholder="Texto Nota">
+            <input type="file" class="w-25 m-4" required @change="anadirURL" placeholder="Subir Archivo">
         </div>
         <div id="barraFiltro" class="col-12 d-flex">
             <input type="text" class="w-100 m-4" v-on:keypress="add" v-model="textoFiltro" placeholder="Texto Filtro">
@@ -47,19 +48,32 @@ import firebase from 'firebase'
         textoFiltro:'',
         orden:"4",
         completadas:false,
-        textoCompletar:'Completar todas' 
+        textoCompletar:'Completar todas',
+        linkArchivo: '',
+        nombreArchivo: '',
+        urlArchivo: ''
       }
     },
     firestore: {
       notas: db.collection('notas'),
     },
     methods: {
-        add: function(event){
+        add(event){
             if(event.keyCode == 13){
-                db.collection('notas').add({text:this.textoNota,marcada:false,tiempo:Date.now(),prioridad:-1, usuario: firebase.auth().currentUser.email});
-                this.completadas=false;
-                this.textoNota='';
+                //firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
+                firebase.storage().ref(this.linkArchivo.name).put(this.linkArchivo).on(firebase.storage.TaskEvent.STATE_CHANGED,
+                () => {
+                    firebase.storage().ref().child(this.linkArchivo.name).getDownloadURL().then(
+                        url =>{
+                            this.urlArchivo = url
+                            db.collection('notas').add({text:this.textoNota,marcada:false,tiempo:Date.now(),prioridad:-1, usuario: firebase.auth().currentUser.email, archivo: {nombre: this.nombreArchivo,url: this.urlArchivo}});
+                            this.textoNota='';
+                        }
+                    ).catch()
+                    this.completadas=false;
+                 })
             }
+        
         },
         delCompletadas: function(){
             /*this.notas=this.notas.filter(function(elemento){
@@ -90,6 +104,10 @@ import firebase from 'firebase'
         },
         borrarNota: function(todo){
                 db.collection('notas').doc(todo).delete();
+        },
+        anadirURL(e){
+            this.nombreArchivo = e.target.files[0].name;
+            this.linkArchivo = e.target.files[0];
         }
     },
     computed: {

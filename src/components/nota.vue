@@ -25,6 +25,7 @@
                     <input type="radio" @click="cambiarPrioridad(todo,1)" id="option3">Alta
                 </label>
             </div>
+            <div><a v-bind:href="todo.archivo.url"> {{ todo.archivo.nombre }}</a></div>
           </div>
       </div>
     </li>
