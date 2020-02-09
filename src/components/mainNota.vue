@@ -5,6 +5,8 @@
             <input type="text" class="w-75 m-4" required v-on:keypress="add" v-model="textoNota" placeholder="Texto Nota">
             <input type="file" class="w-25 m-4" required @change="anadirURL" placeholder="Subir Archivo">
         </div>
+        <label class="col-12 col-sm-6 align-center"> {{snapshot}}</label>
+        <label class="col-12 col-sm-6">{{error}}</label>
         <div id="barraFiltro" class="col-12 d-flex">
             <input type="text" class="w-100 m-4" v-on:keypress="add" v-model="textoFiltro" placeholder="Texto Filtro">
         </div>
@@ -51,7 +53,10 @@ import firebase from 'firebase'
         textoCompletar:'Completar todas',
         linkArchivo: '',
         nombreArchivo: '',
-        urlArchivo: ''
+        urlArchivo: '',
+        subiendo: false,
+        snapshot: '',
+        error:'',
       }
     },
     firestore: {
@@ -59,9 +64,11 @@ import firebase from 'firebase'
     },
     methods: {
         add(event){
-            if(event.keyCode == 13){
+            if(event.keyCode == 13 && !this.subiendo){
                 //firebase.storage().ref(`${this.imageData.name}`).put(this.imageData);
                 firebase.storage().ref(this.linkArchivo.name).put(this.linkArchivo).on(firebase.storage.TaskEvent.STATE_CHANGED,
+                (snapshot) => {this.snapshot ="Progreso = "+ parseInt((snapshot.bytesTransferred / snapshot.totalBytes) * 100)+"%"},
+                (error) => {this.error = error},
                 () => {
                     firebase.storage().ref().child(this.linkArchivo.name).getDownloadURL().then(
                         url =>{
@@ -71,6 +78,7 @@ import firebase from 'firebase'
                         }
                     ).catch()
                     this.completadas=false;
+                    this.subiendo = false;
                  })
             }
         

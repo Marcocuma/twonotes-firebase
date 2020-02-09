@@ -8,6 +8,7 @@ import login from "./components/login.vue"
 import noticias from "./components/noticias.vue"
 import olimpicos from "./components/olimpicos.vue"
 import { firestorePlugin } from 'vuefire'
+import './registerServiceWorker'
 import firebase from 'firebase'
 
 Vue.use(firestorePlugin)
@@ -28,7 +29,6 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: "history",
   routes 
 })
 

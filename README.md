@@ -1,4 +1,4 @@
-# twonotes
+# twonotespwa
 
 ## Project setup
 ```
