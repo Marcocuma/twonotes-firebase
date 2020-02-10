@@ -1,6 +1,7 @@
 <template lang="html">
 
   <section class="main-nota row col-12">
+      <nav1 class="col-12"></nav1>
         <div id="barraBusqueda" class="col-12 d-flex">
             <input type="text" class="w-75 m-4" required v-on:keypress="add" v-model="textoNota" placeholder="Texto Nota">
             <input type="file" class="w-25 m-4" required @change="anadirURL" placeholder="Subir Archivo">
@@ -30,16 +31,22 @@
 import lista from './lista.vue'
 import {db} from '../../db.js'
 import firebase from 'firebase'
+import nav1 from './nav1.vue'
   export default  {
     name: 'main-nota',
     components: {
-      lista
+      lista,
+      nav1
     },
     props: [],
     mounted () {
     },
     updated() {
-      localStorage.notas=JSON.stringify(this.notas);
+      if(firebase.auth().currentUser){
+          this.$emit('logged',true)
+      } else {
+          this.$emit('logged',false)
+      }
     },
     data () {
       return {
@@ -87,6 +94,10 @@ import firebase from 'firebase'
             /*this.notas=this.notas.filter(function(elemento){
                 return !elemento.marcada;
             })*/
+            this.notas.forEach((nota) => {
+                if(nota.marcada)
+                    db.collection('notas').doc(nota.id).delete();
+            })
         },
         calculaTiempo: function(index){
             var tiempo=new Date(Date.now()-this.notas[index].tiempo);

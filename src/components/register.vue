@@ -7,11 +7,11 @@
           class="form-control" v-model="correo" aria-describedby="helpId" placeholder="Introduce el correo">
         <input type="password"
           class="form-control" v-model="contrasena" aria-describedby="helpId" placeholder="Introduce la contraseña">
-          <input name="Login" @click="login" id="" class="btn btn-primary" type="button" value="Login">
-          <router-link class="nav-link" to="/register">Registrate Aqui</router-link>
-        <div class="card-footer d-flex">
-          <button name="Google" @click="googleLogin" id="" class="btn btn-primary" type="button" value="Google"><img src="./../assets/google.png" class="iconoBoton"></button>
-        </div>
+          <input name="Registrase" @click="register" id="" class="btn btn-primary" type="button" value="Registrase">
+          <router-link class="nav-link" to="/login">Logueate Aqui</router-link>
+      </div>
+      <div class="card-footer">
+        <p>{{error}}</p>
       </div>
       <section id="firebaseui-auth-container"></section>
     </div>
@@ -30,20 +30,19 @@ import firebase from 'firebase'
       return {
         correo:'',
         contrasena:'',
+        errores:'',
       }
     },
     updated() {
     },
     methods: {
-        login:function() {
-          firebase.auth().signInWithEmailAndPassword(this.correo,this.contrasena)
-          this.logged = true
+        register(){
+          firebase.auth().createUserWithEmailAndPassword(this.correo,this.contrasena).catch(function(error) {
+            // Handle Errors here.
+            this.errores = error.code;
+            // ...
+          });
         },
-        googleLogin: function(){
-            var provider = new firebase.auth.GoogleAuthProvider();
-            firebase.auth().signInWithRedirect(provider)
-            this.$emit('googleProvider',provider)
-        }
     },
     computed: {
 

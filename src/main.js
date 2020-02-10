@@ -5,8 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import VueRouter from 'vue-router'
 import nota from "./components/mainNota.vue"
 import login from "./components/login.vue"
-import noticias from "./components/noticias.vue"
-import olimpicos from "./components/olimpicos.vue"
+import register from "./components/register.vue"
 import { firestorePlugin } from 'vuefire'
 import './registerServiceWorker'
 import firebase from 'firebase'
@@ -22,10 +21,13 @@ const routes = [
       requiresAuth: true
     }
   },
-  { path: '/noticias', component: noticias },
-  { path: '/olimpicos', component: olimpicos },
   { path: '/login', component: login },
-  { path: "/*" , component: olimpicos }
+  { path: '/register', component: register },
+  { path: "/*" , component: nota,
+    meta: {
+      requiresAuth: true
+    }
+ }
 ]
 
 const router = new VueRouter({

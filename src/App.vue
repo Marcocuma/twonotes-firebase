@@ -1,7 +1,6 @@
 <template>
 <div class="d-flex flex-column justify-content-between" id="contenedor">
     <div id="notas">
-        <nav1></nav1>
         <keep-alive>
           <transition name="slide-fade">
             <router-view></router-view>
@@ -14,17 +13,16 @@
 <script>
 
 
-import nav1 from './components/nav1.vue'
+
 import footer1 from './components/footer1.vue'
 export default {
   name: 'notas',
   components: {
-    nav1,
     footer1
   },
   data(){
     return{
-        
+        logged:false,
       }
   },
   mounted() {
@@ -33,7 +31,9 @@ export default {
   
   methods:
     {
-        
+        logeado: function(logged){
+          this.logged=logged
+        }
     },
     computed:
     {
