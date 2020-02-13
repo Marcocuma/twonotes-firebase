@@ -38,9 +38,7 @@ import firebase from 'firebase'
     methods: {
         register(){
           firebase.auth().createUserWithEmailAndPassword(this.correo,this.contrasena).catch(function(error) {
-            // Handle Errors here.
             this.errores = error.code;
-            // ...
           });
         },
     },
